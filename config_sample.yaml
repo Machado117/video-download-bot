@@ -1,0 +1,40 @@
+telegram:
+  token: "TELEGRAM_BOT_TOKEN"
+
+jellyfin:
+  url: "http://localhost:8096"
+  api_token: "JELLYFIN_API_TOKEN"
+
+downloader:
+  update_interval: 2
+  ytdl_opts:
+    paths:
+      home: "out/"
+    updatetime: false
+    outtmpl: "%(title).100s [%(id)s].%(ext)s"
+    format: "bestvideo[height<=2160]+bestaudio/best[height<=2160]"
+    subtitleslangs: ["en.*"]
+    writesubtitles: true
+    writethumbnail: true
+    noplaylist: true
+    merge_output_format: mp4
+    extractor_args:
+      youtube:
+        lang: ["en"]
+    postprocessors:
+      - key: "FFmpegThumbnailsConvertor"
+        format: jpg
+        when: before_dl
+      - key: "SponsorBlock"
+        when: after_filter
+      - key: "ModifyChapters"
+        remove_sponsor_segments:
+          - sponsor
+        force_keyframes: false
+      - key: "FFmpegMetadata"
+        add_metadata: true
+        add_chapters: true
+      - key: "EmbedThumbnail"
+        already_have_thumbnail: false
+      - key: "FFmpegEmbedSubtitle"
+        already_have_subtitle: false
